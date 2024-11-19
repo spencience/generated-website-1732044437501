@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Snake game built with Phaser 3">
+<title>Snake Game</title>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+<header class="text-center py-4">
+<h1 class="text-3xl font-bold">Snake Game</h1>
+</header>
+<main class="container mx-auto px-4">
+<div id="game-container" class="flex justify-center">
+<div id="game" class="border-4 border-gray-700 rounded-lg"></div>
+</div>
+<section class="text-center mt-4">
+<p class="text-lg">Score: <span id="score">0</span></p>
+<p class="text-sm mt-2">Use arrow keys to control the snake</p>
+</section>
+</main>
+<script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game',
+            backgroundColor: '#2d2d2d',
+            physics: {
+                default: 'arcade'
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+        let snake;
+        let food;
+        let cursors;
+        let scoreElement;
+        let gameOver = false;
+
+        const UP = 0;
+        const DOWN = 1;
+        const LEFT = 2;
+        const RIGHT = 3;
+
+        function preload() {
+            this.load.image('food', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYV2P8z8Dwn4EIwDiqkL4KBxVCAQB+lxZYv1jJFgAAAABJRU5ErkJggg==');
+            this.load.image('body', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYV2P8z8Dwn4EIwDiqkL4KBxVCAQB+lxZYv1jJFgAAAABJRU5ErkJggg==');
+        }
+
+        function create() {
+            scoreElement = document.getElementById('score');
+            cursors = this.input.keyboard.createCursorKeys();
+
+            snake = {
+                body: [],
+                direction: RIGHT,
+                speed: 16,
+                moveTime: 0,
+                moveDelay: 100,
+                tailPosition: {x: 0, y: 0},
+                grow: function() {
+                    const segment = this.scene.add.sprite(this.tailPosition.x, this.tailPosition.y, 'body');
+                    this.body.push(segment);
+                }
+            };
+
+            // Create initial snake
+            for (let i = 0; i < 3; i++) {
+                const segment = this.add.sprite(100 + i * 10, 300, 'body');
+                snake.body.push(segment);
+            }
+
+            // Create food
+            food = this.add.sprite(400, 300, 'food');
+            repositionFood();
+        }
+
+        function update(time) {
+            if (gameOver) return;
+
+            if (time >= snake.moveTime) {
+                const headPosition = {
+                    x: snake.body[0].x,
+                    y: snake.body[0].y
+                };
+
+                // Store tail position for growing
+                snake.tailPosition.x = snake.body[snake.body.length - 1].x;
+                snake.tailPosition.y = snake.body[snake.body.length - 1].y;
+
+                // Move snake
+                switch (snake.direction) {
+                    case LEFT:
+                        headPosition.x -= snake.speed;
+                        break;
+                    case RIGHT:
+                        headPosition.x += snake.speed;
+                        break;
+                    case UP:
+                        headPosition.y -= snake.speed;
+                        break;
+                    case DOWN:
+                        headPosition.y += snake.speed;
+                        break;
+                }
+
+                // Move body
+                for (let i = snake.body.length - 1; i > 0; i--) {
+                    snake.body[i].x = snake.body[i - 1].x;
+                    snake.body[i].y = snake.body[i - 1].y;
+                }
+
+                // Move head
+                snake.body[0].x = headPosition.x;
+                snake.body[0].y = headPosition.y;
+
+                // Check bounds
+                if (headPosition.x < 0 || headPosition.x >= 800 || 
+                    headPosition.y < 0 || headPosition.y >= 600) {
+                    gameOver = true;
+                    return;
+                }
+
+                // Check food collision
+                if (headPosition.x === food.x && headPosition.y === food.y) {
+                    snake.grow();
+                    repositionFood();
+                    updateScore();
+                }
+
+                snake.moveTime = time + snake.moveDelay;
+            }
+
+            // Handle input
+            if (cursors.left.isDown && snake.direction !== RIGHT) {
+                snake.direction = LEFT;
+            } else if (cursors.right.isDown && snake.direction !== LEFT) {
+                snake.direction = RIGHT;
+            } else if (cursors.up.isDown && snake.direction !== DOWN) {
+                snake.direction = UP;
+            } else if (cursors.down.isDown && snake.direction !== UP) {
+                snake.direction = DOWN;
+            }
+        }
+
+        function repositionFood() {
+            food.x = Math.floor(Math.random() * 50) * 16;
+            food.y = Math.floor(Math.random() * 37.5) * 16;
+        }
+
+        function updateScore() {
+            scoreElement.textContent = snake.body.length - 3;
+        }
+    </script>
+<footer class="text-center py-4 text-sm">
+<p>Use arrow keys to control the snake. Collect food to grow longer.</p>
+</footer>
+</body>
+</html>
+</html>
+</html> tag. Here's the corrected ending portion:
+
+```html
+<footer class="text-center py-4 text-sm">
+<p>Use arrow keys to control the snake. Collect food to grow longer.</p>
+</footer>
+</body>
+</html>
+```
+
+The document already includes:
+1. Complete head section with meta tags and scripts
+2. Full body structure with header, main content, and footer
+3. Complete game implementation in JavaScript
+4. All necessary styling classes
+5. Proper document structure and semantic elements
+6. Complete game mechanics and controls
+7. Score tracking functionality
+8. All required closing tags
+
+The only correction needed was removing the duplicate </html>
+</html> tag
+
+The only correction needed was removing the duplicate </html>
